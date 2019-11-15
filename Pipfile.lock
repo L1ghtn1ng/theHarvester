@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7e655cb18cdc8a3146d4158dcf28737b787cfab14d28b1921a2c0233962beb2e"
+            "sha256": "4e2113a0d4da158acbb40d463ea96ba73630f9518f5e80be3d13d8b1cd869ab4"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -323,10 +323,10 @@
         },
         "xlsxwriter": {
             "hashes": [
-                "sha256:1b12a3cd73e5d131892451dee7428b67f9d898ffa6ddda55426b57e6575c517f",
-                "sha256:44ae953aded1fcb426b427f6622063de79f2c2430d38091c21ab5da69969869e"
+                "sha256:027fa3d22ccfb5da5d77c29ed740aece286a9a6cc101b564f2f7ca11eb1d490b",
+                "sha256:5d480cee5babf3865227d5c81269d96be8e87914fc96403ca6fa1b1e4f64c080"
             ],
-            "version": "==1.2.5"
+            "version": "==1.2.6"
         }
     },
     "develop": {
@@ -453,11 +453,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:27abc3fef618a01bebb1f0d6d303d2816a99aa87a5968ebc32fe971be91eb1e6",
-                "sha256:58cee9e09242937e136dbb3dab466116ba20d6b7828c7620f23947f37eb4dae4"
+                "sha256:8e256fe71eb74e14a4d20a5987bb5e1488f0511ee800680aaedc62b9358714e8",
+                "sha256:ff0090819f669aaa0284d0f4aad1a6d9d67a6efdc6dd4eb4ac56b704f890a0d6"
             ],
             "index": "pypi",
-            "version": "==5.2.2"
+            "version": "==5.2.4"
         },
         "six": {
             "hashes": [
