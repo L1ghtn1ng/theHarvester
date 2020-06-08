@@ -4,6 +4,7 @@ from argparse import Namespace
 from typing import List
 
 from fastapi import FastAPI, Header, Query, Request
+from fastapi.responses import ORJSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -13,15 +14,15 @@ from starlette.staticfiles import StaticFiles
 from theHarvester import __main__
 
 limiter = Limiter(key_func=get_remote_address)
-app = FastAPI(title='RestfulHarvest',
+app = FastAPI(title='Restful Harvest',
               description='Rest API for theHarvester powered by FastAPI',
               version='0.0.1')
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # This is where we will host files that arise if the user specifies a filename
-# app.mount("/static", StaticFiles(directory="static/"), name="static")
-app.mount('/static', StaticFiles(directory='theHarvester/lib/web/static/'), name='static')
+# app.mount('/static', StaticFiles(directory='static/'), name='static')
+app.mount('/static', StaticFiles(directory='theHarvester/lib/app/static/'), name='static')
 
 
 @app.get('/')
@@ -41,22 +42,32 @@ async def picture():
     return StreamingResponse(io.BytesIO(base64.b64decode(string)))
 
 
-@app.get('/query')
+@app.get('/sources', response_class=ORJSONResponse)
 @limiter.limit('5/minute')
-async def query(request: Request, dns_server: str = Query(''),
+async def getsources(request: Request):
+    # Endpoint for user to query for available sources theHarvester supports
+    # Rate limit of 5 requests per minute
+    sources = await __main__.start(Namespace(source='getsources'))
+    return {'sources': sources}
+
+
+@app.get('/query', response_class=ORJSONResponse)
+@limiter.limit('2/minute')
+async def query(request: Request, dns_server: str = Query(""), user_agent: str = Header(None),
                 dns_brute=Query(False), dns_lookup: bool = Query(False),
                 dns_tld: bool = Query(False),
-                filename: str = Query(''),
-                google_dork: bool = Query(False),
-                proxies: bool = Query(False),
-                shodan: bool = Query(False),
-                take_over: bool = Query(False),
-                virtual_host: bool = Query(False),
+                filename: str = Query(""),
+                google_dork: bool = Query(False), proxies: bool = Query(False), shodan: bool = Query(False),
+                take_over: bool = Query(False), virtual_host: bool = Query(False),
                 source: List[str] = Query(..., description='Data sources to query comma separated with no space'),
                 limit: int = Query(500), start: int = Query(0), domain: str = Query(..., description='Domain to be '
                                                                                                      'harvested')):
     # Query function that allows user to query theHarvester rest API
-    # Rate limit of 5 requests per minute
+    # Rate limit of 2 requests per minute
+    # basic user agent filtering
+    if 'gobuster' in user_agent or 'sqlmap' in user_agent or 'rustbuster' in user_agent:
+        response = RedirectResponse(app.url_path_for('picture'))
+        return response
     try:
         emails, ips, urls, html_filename, xml_filename = await __main__.start(Namespace(dns_brute=dns_brute,
                                                                                         dns_lookup=dns_lookup,

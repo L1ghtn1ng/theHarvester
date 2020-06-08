@@ -24,25 +24,35 @@ async def start(rest_args=None):
     parser.add_argument('-d', '--domain', help='Company name or domain to search.', required=True)
     parser.add_argument('-l', '--limit', help='Limit the number of search results, default=500.', default=500, type=int)
     parser.add_argument('-S', '--start', help='Start with result number X, default=0.', default=0, type=int)
-    parser.add_argument('-g', '--google-dork', help='Use Google Dorks for Google search.', default=False, action='store_true')
-    parser.add_argument('-p', '--proxies', help='Use proxies for requests, enter proxies in proxies.yaml.', default=False, action='store_true')
-    parser.add_argument('-s', '--shodan', help='Use Shodan to query discovered hosts.', default=False, action='store_true')
-    parser.add_argument('-v', '--virtual-host', help='Verify host name via DNS resolution and search for virtual hosts.', action='store_const', const='basic', default=False)
+    parser.add_argument('-g', '--google-dork', help='Use Google Dorks for Google search.', default=False,
+                        action='store_true')
+    parser.add_argument('-p', '--proxies', help='Use proxies for requests, enter proxies in proxies.yaml.',
+                        default=False, action='store_true')
+    parser.add_argument('-s', '--shodan', help='Use Shodan to query discovered hosts.', default=False,
+                        action='store_true')
+    parser.add_argument('-v', '--virtual-host',
+                        help='Verify host name via DNS resolution and search for virtual hosts.', action='store_const',
+                        const='basic', default=False)
     parser.add_argument('-e', '--dns-server', help='DNS server to use for lookup.')
     parser.add_argument('-t', '--dns-tld', help='Perform a DNS TLD expansion discovery, default False.', default=False)
     parser.add_argument('-r', '--take-over', help='Check for takeovers.', default=False, action='store_true')
-    parser.add_argument('-n', '--dns-lookup', help='Enable DNS server lookup, default False.', default=False, action='store_true')
-    parser.add_argument('-c', '--dns-brute', help='Perform a DNS brute force on the domain.', default=False, action='store_true')
+    parser.add_argument('-n', '--dns-lookup', help='Enable DNS server lookup, default False.', default=False,
+                        action='store_true')
+    parser.add_argument('-c', '--dns-brute', help='Perform a DNS brute force on the domain.', default=False,
+                        action='store_true')
     parser.add_argument('-f', '--filename', help='Save the results to an HTML and/or XML file.', default='', type=str)
     parser.add_argument('-b', '--source', help='''baidu, bing, bingapi, bufferoverun, certspotter, crtsh, dnsdumpster,
-                        dogpile, duckduckgo, exalead, github-code, google,
-                        hackertarget, hunter, intelx, linkedin, linkedin_links, netcraft, otx, pentesttools,
-                        rapiddns, securityTrails, spyse, suip, threatcrowd,
-                        trello, twitter, vhost, virustotal, yahoo, all''')
+                            dogpile, duckduckgo, exalead, github-code, google,
+                            hackertarget, hunter, intelx, linkedin, linkedin_links, netcraft, otx, pentesttools,
+                            rapiddns, securityTrails, spyse, sublist3r, suip, threatcrowd, threatminer,
+                            trello, twitter, urlscan, virustotal, yahoo, all''')
+
     # determines if filename is coming from rest api or user
     rest_filename = ""
     # indicates this from the rest API
     if rest_args:
+        if rest_args.source and rest_args.source == "getsources":
+            return list(sorted(Core.get_supportedengines()))
         args = rest_args
         # We need to make sure the filename is random as to not overwrite other files
         filename: str = args.filename
@@ -450,8 +460,6 @@ async def start(rest_args=None):
     await handler(lst=stor_lst)
 
     return_ips = []
-    print("rest_filename: ", rest_filename)
-    print("rest_args: ", rest_args)
     if rest_args is not None and len(rest_filename) == 0:
         # Indicates user is using rest api but not wanting output to be saved to a file
         full = [host if ':' in host and word in host else word in host.split(':')[0] and host for host in full]
@@ -647,12 +655,20 @@ async def start(rest_args=None):
         try:
             print('\n[*] Reporting started.')
             db = stash.StashManager()
-            scanboarddata = await db.getscanboarddata()
+            if rest_args and rest_args.domain is not None and len(rest_args.domain) > 1:
+                # If using rest API filter by domain
+                scanboarddata = await db.getscanboarddata(domain=rest_args.domain)
+            else:
+                scanboarddata = await db.getscanboarddata()
             latestscanresults = await db.getlatestscanresults(word)
             previousscanresults = await db.getlatestscanresults(word, previousday=True)
             latestscanchartdata = await db.latestscanchartdata(word)
             scanhistorydomain = await db.getscanhistorydomain(word)
-            pluginscanstatistics = await db.getpluginscanstatistics()
+            if rest_args and rest_args.domain is not None and len(rest_args.domain) > 1:
+                # If using rest API filter by domain
+                pluginscanstatistics = await db.getpluginscanstatistics(domain=rest_args.domain)
+            else:
+                pluginscanstatistics = await db.getpluginscanstatistics()
             generator = statichtmlgenerator.HtmlGenerator(word)
             HTMLcode = await generator.beginhtml()
             HTMLcode += await generator.generatedashboardcode(scanboarddata)
@@ -680,12 +696,12 @@ async def start(rest_args=None):
                 try:
                     import aiofiles
                     async with aiofiles.open(
-                            f'theHarvester/lib/web/static/{rest_filename}.html' if '.html' not in rest_filename
-                            else f'theHarvester/lib/web/static/{rest_filename}', 'w+') as Html_file:
+                            f'theHarvester/lib/app/static/{rest_filename}.html' if '.html' not in rest_filename
+                            else f'theHarvester/lib/app/static/{rest_filename}', 'w+') as Html_file:
                         await Html_file.write(HTMLcode)
                 except Exception as ex:
                     print(f"An excpetion has occurred: {ex}")
-                    list(set(all_emails)), return_ips, full, f'{ex}', ""
+                    return list(set(all_emails)), return_ips, full, f'{ex}', ""
                 # Html_file = async with aiofiles.open(f'{filename}.html' if '.html' not in filename else filename, 'w')
                 # Html_file.write(HTMLcode)
                 # Html_file.close()
@@ -700,7 +716,7 @@ async def start(rest_args=None):
             if len(rest_filename) == 0:
                 filename = filename.rsplit('.', 1)[0] + '.xml'
             else:
-                filename = 'theHarvester/lib/web/static/' \
+                filename = 'theHarvester/lib/app/static/' \
                            + rest_filename.rsplit('.', 1)[0] + '.xml'
             # TODO use aiofiles if user is using rest api
             with open(filename, 'w+') as file:
@@ -742,10 +758,12 @@ async def start(rest_args=None):
                 file.write('</theHarvester>')
             if len(rest_filename) > 0:
                 return list(set(all_emails)), return_ips, full, f'/static/{rest_filename}.html', \
-                       f'/static/{filename[filename.find("/static/") + 8:]}' if '/static/' in filename else f'/static/{filename}'
+                    f'/static/{filename[filename.find("/static/") + 8:]}' if '/static/' in filename \
+                    else f'/static/{filename} '
             print('[*] Files saved.')
         except Exception as er:
             print(f'\033[93m[!] An error occurred while saving the XML file: {er} \033[0m')
+            return list(set(all_emails)), return_ips, full, f'/static/{rest_filename}.html', f'{er}'
         print('\n\n')
         sys.exit(0)
 
