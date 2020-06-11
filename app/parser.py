@@ -4,7 +4,6 @@ Example script to query theHarvester rest API, obtain results, and write out to 
 
 import asyncio
 import pprint
-
 import aiohttp
 
 

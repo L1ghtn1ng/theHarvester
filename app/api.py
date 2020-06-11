@@ -14,7 +14,7 @@ from starlette.staticfiles import StaticFiles
 from theHarvester import __main__
 
 limiter = Limiter(key_func=get_remote_address)
-app = FastAPI(title='Restful Harvest',
+app = FastAPI(title='RestfulHarvest',
               description='Rest API for theHarvester powered by FastAPI',
               version='0.0.1')
 app.state.limiter = limiter
@@ -22,7 +22,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # This is where we will host files that arise if the user specifies a filename
 # app.mount('/static', StaticFiles(directory='static/'), name='static')
-app.mount('/static', StaticFiles(directory='theHarvester/lib/app/static/'), name='static')
+app.mount('/static', StaticFiles(directory='app/static/'), name='static')
 
 
 @app.get('/')
