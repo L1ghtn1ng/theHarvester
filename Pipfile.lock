@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "edd1634242fdb55fcaabddb7bb5537bb747b46a7cf82d4487aedf5423bc1ee60"
+            "sha256": "b6873f0bde5992a4e680d645081b27c48c65265269448faf1df8a54dfb18b134"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -101,6 +101,13 @@
             ],
             "version": "==20.3.0"
         },
+        "backoff": {
+            "hashes": [
+                "sha256:5e73e2cbe780e1915a204799dba0a01896f45f4385e636bcca7a0614d879d0cd",
+                "sha256:b8fba021fac74055ac05eb7c7bfce4723aedde6cd0a504e5326bcb0bdd6d19a4"
+            ],
+            "version": "==1.10.0"
+        },
         "beautifulsoup4": {
             "hashes": [
                 "sha256:4c98143716ef1cb40bf7f39a8e3eec8f8b009509e74904ba3a7b315431577e35",
@@ -109,6 +116,14 @@
             ],
             "index": "pypi",
             "version": "==4.9.3"
+        },
+        "censys": {
+            "hashes": [
+                "sha256:510ce84a9b49bf4d745cfd37370498a8af80e1e30f502369a299b048895fa2a4",
+                "sha256:926aa55648abb01451f22a1bef03c8777dac8e550979ce5662be079fdf9c0e94"
+            ],
+            "index": "pypi",
+            "version": "==1.1.0"
         },
         "certifi": {
             "hashes": [
@@ -380,11 +395,11 @@
         },
         "requests": {
             "hashes": [
-                "sha256:7f1a0b932f4a60a1a65caa4263921bb7d9ee911957e0ae4a23a6dd08185ad5f8",
-                "sha256:e786fa28d8c9154e6a4de5d46a1d921b8749f8b74e28bde23768e5e16eece998"
+                "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804",
+                "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"
             ],
             "index": "pypi",
-            "version": "==2.25.0"
+            "version": "==2.25.1"
         },
         "retrying": {
             "hashes": [
