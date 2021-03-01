@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "301b5bf32af03235b52fa947b476364c6ba9474e84d0ffcb1a6640baa2b62f21"
+            "sha256": "1be1b2316171dee52b9d140303c5ee404d2285a93f68810be2f37bd1043545b5"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -67,10 +67,11 @@
         },
         "aiomultiprocess": {
             "hashes": [
-                "sha256:c613ac39973bbf0ceeb2fdb296ca1ebf9e55d2e0f748f50ae3c116a8b05be01a"
+                "sha256:07e7d5657697678d9d2825d4732dfd7655139762dee665167380797c02c68848",
+                "sha256:3036c4c881cfbc63674686e036097f22309017c6bf96b04722a542ac9cac7423"
             ],
             "index": "pypi",
-            "version": "==0.8.0"
+            "version": "==0.9.0"
         },
         "aiosqlite": {
             "hashes": [
@@ -173,7 +174,6 @@
                 "sha256:f2d45f97ab6bb54753eab54fffe75aaf3de4ff2341c9daee1987ee1837636f1d",
                 "sha256:fd78e5fee591709f32ef6edb9a015b4aa1a5022598e36227500c8f4e02328d9c"
             ],
-            "index": "pypi",
             "version": "==1.14.5"
         },
         "chardet": {
@@ -450,10 +450,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:11d544652edbdfc9cc41aa4c8a5c166513e279f3f2d9f1a9e1c89935b51de6ff",
-                "sha256:a89be573bfddb81bb0b395a416d5e55e3ecc73ce95a368a4f6360bedea33195e"
+                "sha256:2c44efa73b8914dba7807aefd09653ac63c22b5b4ea34f7a80973f418f1a3089",
+                "sha256:c23ac707e8e8aabb825e4d91f8e17247f9cc14b0d64dd9e97be0781e9e525bba"
             ],
-            "version": "==4.56.2"
+            "version": "==4.58.0"
         },
         "typing-extensions": {
             "hashes": [
