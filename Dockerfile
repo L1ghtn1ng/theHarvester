@@ -1,4 +1,4 @@
-FROM ubuntu:hirsute
+FROM ubuntu:devel
 LABEL maintainer="@jay_townsend1 & @NotoriousRebel1"
 RUN mkdir /app
 WORKDIR /app
