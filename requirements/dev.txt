@@ -1,5 +1,5 @@
 -r base.txt
-flake8==6.0.0
+flake8==6.1.0
 mypy==1.4.1
 mypy-extensions==1.0.0
 pydantic==2.0.3
